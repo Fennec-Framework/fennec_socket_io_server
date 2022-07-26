@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io' hide Socket;
 
@@ -359,6 +360,27 @@ class Server extends Engine {
 
         handleUpgrade(socketConnect);
 
+        return socketConnect.done;
+      } else {
+        var socketConnect = SocketConnect(req);
+        socketConnect.dataset['options'] = options;
+        handleRequest(socketConnect);
+        return socketConnect.done;
+      }
+    });
+  }
+
+  void attachToHttpServer(
+      StreamController<HttpRequest> streamController, Map? options) {
+    options = options ?? {};
+    streamController.stream.listen((event) async {
+      var req = event;
+      if (WebSocketTransformer.isUpgradeRequest(req) &&
+          transports.contains('websocket')) {
+        var socket = await WebSocketTransformer.upgrade(req);
+        var socketConnect = SocketConnect.fromWebSocket(req, socket);
+        socketConnect.dataset['options'] = options;
+        handleUpgrade(socketConnect);
         return socketConnect.done;
       } else {
         var socketConnect = SocketConnect(req);

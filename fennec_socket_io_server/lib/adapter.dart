@@ -37,9 +37,9 @@ class _MemoryStoreAdapter extends EventEmitter implements Adapter {
   late Encoder encoder;
   late Namespace nsp;
 
-  _MemoryStoreAdapter(Namespace nsp) {
-    nsp = nsp;
-    encoder = nsp.server.encoder;
+  _MemoryStoreAdapter(Namespace nameSpace) {
+    nsp = nameSpace;
+    encoder = nameSpace.server.encoder;
   }
 
   /// Adds a socket to a room.

@@ -22,14 +22,14 @@ class Client {
   Client(this.server, this.conn)
       : id = conn.id,
         request = conn.connect.request {
-    // setup();
+    setup();
   }
 
   /// Sets up event listeners.
   ///
   /// @api private
   void setup() {
-    // decoder.on('decoded', ondecoded);
+    decoder.on('decoded', ondecoded);
     conn.on('data', ondata);
     conn.on('error', (data) {});
     conn.on('close', onclose);

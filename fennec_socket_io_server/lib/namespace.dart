@@ -60,7 +60,10 @@ class Namespace extends EventEmitter {
   /// @api private
   void run(socket, Function fn) {
     var fns = this.fns.sublist(0);
-    if (fns.isEmpty) fn(null);
+    if (fns.isEmpty) {
+      fn(null);
+      return;
+    }
 
     run0(0, fns, socket, fn);
   }

@@ -4,7 +4,7 @@ import 'dart:io';
 import 'client.dart';
 import 'engine/engine.dart';
 import 'namespace.dart';
-import 'socket_io_config.dart';
+
 import 'utils/parser.dart';
 
 Map oldSettings = {
@@ -25,7 +25,6 @@ class ServerIO {
   Engine? engine;
   Encoder encoder = Encoder();
   Future<bool>? _ready;
-  SocketIOConfig socketIOConfig;
 
   /// Server is ready
   ///
@@ -44,21 +43,14 @@ class ServerIO {
     return httpServer!.port;
   }
 
-  ServerIO(this.socketIOConfig, {server, Map? options}) {
+  ServerIO({Map? options}) {
     options ??= {};
     path(options.containsKey('path') ? options['path'] : '/socket.io');
     serveClient(false != options['serveClient']);
     adapter = options.containsKey('adapter') ? options['adapter'] : 'default';
     origins(options.containsKey('origins') ? options['origins'] : '*:*');
     sockets = of('/');
-    if (server != null) {
-      _ready = Future(() async {
-        await attach(options);
-        return true;
-      });
-    } else {
-      _ready = Future.value(true);
-    }
+    _ready = Future.value(true);
   }
   void checkRequest(HttpRequest req, [Function? fn]) {
     var origin = req.headers.value('origin') ?? req.headers.value('referer');
@@ -148,11 +140,6 @@ class ServerIO {
     return this;
   }
 
-  /// Sets the adapter for rooms.
-  ///
-  /// @param {Adapter} pathname
-  /// @return {Server|Adapter} self when setting or value when getting
-  /// @api public
   String get adapter => _adapter;
 
   set adapter(String v) {
@@ -182,46 +169,57 @@ class ServerIO {
   /// @param {Object} options passed to engine.io
   /// @return {Server} self
   /// @api public
-  Future<void> listen([Map? opts]) async {
-    await attach(opts);
+  Future<void> listen(dynamic host, int port, [Map? opts]) async {
+    await attach(host, port, opts);
   }
 
-  Future<ServerIO> attach([Map? opts]) async {
-    opts ??= {};
+  Future<void> listenToHttpServer(
+      StreamController<HttpRequest> httpServerStream,
+      [Map? opts]) async {
+    await attachToHttpServer(httpServerStream, opts);
+  }
 
+  Future<ServerIO> attachToHttpServer(
+      StreamController<HttpRequest> httpServerStream,
+      [Map? opts]) async {
+    opts ??= {};
     if (!opts.containsKey('path')) {
       opts['path'] = path();
     }
-
     opts['allowRequest'] = checkRequest;
-
-    var server =
-        await HttpServer.bind(socketIOConfig.host, socketIOConfig.port);
 
     var completer = Completer();
     var connectPacket = {'type': connectValue, 'nsp': '/'};
     encoder.encode(connectPacket, (encodedPacket) {
-      // the CONNECT packet will be merged with Engine.IO handshake,
-      // to reduce the number of round trips
       opts!['initialPacket'] = encodedPacket;
+      engine = Engine.attachToHttpServer(httpServerStream, opts);
 
-      // initialize engine
-      engine = Engine.attach(server, opts);
-
-      // attach static file serving
-//        if (self._serveClient) self.attachServe(srv);
-
-      // Export http server
-      httpServer = server;
-
-      // bind to engine events
       bind(engine!);
 
       completer.complete();
     });
     await completer.future;
-//      });
+    return this;
+  }
 
+  Future<ServerIO> attach(dynamic host, int port, [Map? opts]) async {
+    opts ??= {};
+    if (!opts.containsKey('path')) {
+      opts['path'] = path();
+    }
+    opts['allowRequest'] = checkRequest;
+    var server = await HttpServer.bind(host, port);
+    var completer = Completer();
+    var connectPacket = {'type': connectValue, 'nsp': '/'};
+    encoder.encode(connectPacket, (encodedPacket) {
+      opts!['initialPacket'] = encodedPacket;
+      engine = Engine.attach(server, opts);
+      httpServer = server;
+      bind(engine!);
+
+      completer.complete();
+    });
+    await completer.future;
     return this;
   }
 
