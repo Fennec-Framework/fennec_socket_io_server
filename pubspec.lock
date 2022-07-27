@@ -16,19 +16,12 @@ packages:
     source: hosted
     version: "3.0.2"
   fennec:
-    dependency: "direct main"
+    dependency: "direct dev"
     description:
       name: fennec
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.4"
-  js:
-    dependency: "direct main"
-    description:
-      name: js
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.6.4"
   lints:
     dependency: "direct dev"
     description:
