@@ -16,8 +16,7 @@ class JSONPTransport extends PollingTransport {
 
   /// Handles incoming data.
   /// Due to a bug in \n handling by browsers, we expect a escaped string.
-  ///
-  /// @api private
+
   @override
   void onData(data) {
     // we leverage the qs module so that we get built-in DoS protection
@@ -37,8 +36,7 @@ class JSONPTransport extends PollingTransport {
   }
 
   /// Performs the write.
-  ///
-  /// @api private
+
   @override
   void doWrite(data, options, [callback]) {
     // we must output valid javascript, not valid json

@@ -75,8 +75,7 @@ class PollingTransport extends Transport {
   }
 
   /// The client sends a request with data.
-  ///
-  /// @api private
+
   void onDataRequest(SocketConnect connect) {
     if (dataReq != null) {
       // assert: this.dataRes, '.dataReq and .dataRes should be (un)set together'
@@ -153,9 +152,6 @@ class PollingTransport extends Transport {
   }
 
   /// Processes the incoming data payload.
-  ///
-  /// @param {String} encoded payload
-  /// @api private
   @override
   void onData(data) {
     if (messageHandler != null) {
@@ -177,8 +173,6 @@ class PollingTransport extends Transport {
   }
 
   /// Overrides onClose.
-  ///
-  /// @api private
   @override
   void onClose() {
     if (writable == true) {
@@ -191,9 +185,6 @@ class PollingTransport extends Transport {
   }
 
   /// Writes a packet payload.
-  ///
-  /// @param {Object} packet
-  /// @api private
   @override
   void send(List packets) {
     writable = false;
@@ -216,10 +207,6 @@ class PollingTransport extends Transport {
   }
 
   /// Writes data as response to poll request.
-  ///
-  /// @param {String} data
-  /// @param {Object} options
-  /// @api private
   void write(data, [options]) {
     doWrite(data, options, () {
       var fn = _reqCleanups.remove(connect);
@@ -228,8 +215,7 @@ class PollingTransport extends Transport {
   }
 
   /// Performs the write.
-  ///
-  /// @api private
+
   void doWrite(data, options, [callback]) {
     var self = this;
 
@@ -311,8 +297,7 @@ class PollingTransport extends Transport {
   }
 
   /// Closes the transport.
-  ///
-  /// @api private
+
   @override
   void doClose([dynamic Function()? fn]) {
     var self = this;
@@ -342,10 +327,6 @@ class PollingTransport extends Transport {
   }
 
   /// Returns headers for a response.
-  ///
-  /// @param {http.IncomingMessage} request
-  /// @param {Object} extra headers
-  /// @api private
   Map headers(SocketConnect connect, [Map? headers]) {
     headers = headers ?? {};
 

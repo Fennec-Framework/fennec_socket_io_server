@@ -5,9 +5,7 @@ class XHRTransport extends PollingTransport {
   XHRTransport(SocketConnect connect) : super(connect);
 
   /// Overrides `onRequest` to handle `OPTIONS`..
-  ///
-  /// @param {http.IncomingMessage}
-  /// @api private
+
   @override
   void onRequest(SocketConnect connect) {
     var req = connect.request;
@@ -27,10 +25,6 @@ class XHRTransport extends PollingTransport {
   }
 
   /// Returns headers for a response.
-  ///
-  /// @param {http.IncomingMessage} request
-  /// @param {Object} extra headers
-  /// @api private
   @override
   Map headers(SocketConnect connect, [Map? headers]) {
     headers = headers ?? {};

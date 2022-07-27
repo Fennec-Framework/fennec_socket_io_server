@@ -97,7 +97,7 @@ class Client {
 
   /// Writes a packet to the transport.
   /// [packet] packet object
-  /// [options] options
+  /// [opts] options
   void packet(packet, [Map? opts]) {
     var self = this;
     opts ??= {};

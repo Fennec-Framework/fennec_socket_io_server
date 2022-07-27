@@ -27,10 +27,7 @@ class Namespace extends EventEmitter {
   late Adapter adapter;
 
   /// Namespace constructor.
-  ///
-  /// @param {Server} server instance
-  /// @param {Socket} name
-  /// @api private
+
   Namespace(this.server, this.name) {
     initAdapter();
   }
@@ -38,26 +35,18 @@ class Namespace extends EventEmitter {
   /// Initializes the `Adapter` for this nsp.
   /// Run upon changing adapter by `Server#adapter`
   /// in addition to the constructor.
-  ///
-  /// @api private
   void initAdapter() {
     adapter = Adapter.newInstance(server.adapter, this);
   }
 
   /// Sets up namespace middleware.
-  ///
-  /// @return {Namespace} self
-  /// @api public
+
   Namespace use(fn) {
     fns.add(fn);
     return this;
   }
 
   /// Executes the middleware for an incoming client.
-  ///
-  /// @param {Socket} socket that will get added
-  /// @param {Function} last fn call in the middleware
-  /// @api private
   void run(socket, Function fn) {
     var fns = this.fns.sublist(0);
     if (fns.isEmpty) {
@@ -83,19 +72,6 @@ class Namespace extends EventEmitter {
   }
 
   /// Targets a room when emitting.
-  ///
-  /// @param {String} name
-  /// @return {Namespace} self
-  /// @api public
-//    in(String name) {
-//        to(name);
-//    }
-
-  /// Targets a room when emitting.
-  ///
-  /// @param {String} name
-  /// @return {Namespace} self
-  /// @api public
   Namespace to(String name) {
     rooms = rooms.isNotEmpty == true ? rooms : [];
     if (!rooms.contains(name)) rooms.add(name);
@@ -103,9 +79,6 @@ class Namespace extends EventEmitter {
   }
 
   /// Adds a new client.
-  ///
-  /// @return {Socket}
-  /// @api private
   Socket add(Client client, query, Function? fn) {
     var socket = Socket(this, client, query);
     var self = this;
@@ -132,8 +105,6 @@ class Namespace extends EventEmitter {
   }
 
   /// Removes a client. Called by each `Socket`.
-  ///
-  /// @api private
   void remove(socket) {
     if (sockets.contains(socket)) {
       sockets.remove(socket);
@@ -141,8 +112,7 @@ class Namespace extends EventEmitter {
   }
 
   /// Emits to all clients.
-  ///
-  /// @api public
+
   @override
   void emit(String event, [dynamic argument]) {
     if (events.contains(event)) {
@@ -164,9 +134,6 @@ class Namespace extends EventEmitter {
   }
 
   /// Sends a `message` event to all clients.
-  ///
-  /// @return {Namespace} self
-  /// @api public
   Namespace send([args]) {
     return write(args);
   }
@@ -177,24 +144,13 @@ class Namespace extends EventEmitter {
   }
 
   /// Gets a list of clients.
-  ///
-  /// @return {Namespace} self
-  /// @api public
-  ///
-
-  ///
-  // ignore: use_function_type_syntax_for_parameters
-  Namespace clients(fn([_])) {
+  Namespace clients(Function([dynamic _]) fn) {
     adapter.clients(rooms, fn);
     rooms = [];
     return this;
   }
 
   /// Sets the compress flag.
-  ///
-  /// @param {Boolean} if `true`, compresses the sending data
-  /// @return {Namespace} self
-  /// @api public
   Namespace compress(compress) {
     flags = flags.isEmpty ? flags : {};
     flags['compress'] = compress;

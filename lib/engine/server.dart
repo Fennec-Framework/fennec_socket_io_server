@@ -75,47 +75,16 @@ class Server extends Engine {
     }
 
     initialPacket = opts['initialPacket'];
-    _init();
-  }
-
-  /// Initialize websocket server
-  ///
-  /// @api private
-  void _init() {
-//  if (this.transports.indexOf('websocket') == -1) return;
-
-//  if (this.ws) this.ws.close();
-//
-//  var wsModule;
-//  try {
-//    wsModule = require(this.wsEngine);
-//  } catch (ex) {
-//    this.wsEngine = 'ws';
-//    // keep require('ws') as separate expression for packers (browserify, etc)
-//    wsModule = require('ws');
-//  }
-//  this.ws = new wsModule.Server({
-//    noServer: true,
-//    clientTracking: false,
-//    perMessageDeflate: this.perMessageDeflate,
-//    maxPayload: this.maxHttpBufferSize
-//  });
   }
 
   /// Returns a list of available transports for upgrade given a certain transport.
-  ///
-  /// @return {Array}
-  /// @api public
+
   List<String> upgrades(String transport) {
     if (!allowUpgrades) return List.empty();
     return Transports.upgradesTo(transport);
   }
 
   /// Verifies a request.
-  ///
-  /// @param {http.IncomingMessage}
-  /// @return {Boolean} whether the request is valid
-  /// @api private
   void verify(SocketConnect connect, bool upgrade, fn) {
     // transport check
     var req = connect.request;
@@ -204,18 +173,11 @@ class Server extends Engine {
 
   /// generate a socket id.
   /// Overwrite this method to generate your custom socket id
-  ///
-  /// @param {Object} request object
-  /// @api public
   String generateId(SocketConnect connect) {
     return _uuid.v1().replaceAll('-', '');
   }
 
   /// Handshakes a new client.
-  ///
-  /// @param {String} transport name
-  /// @param {Object} request object
-  /// @api private
   void handshake(String transportName, SocketConnect connect) {
     var id = generateId(connect);
 
@@ -276,39 +238,18 @@ class Server extends Engine {
         return;
       }
 
-//  var head = new Buffer(upgradeHead.length);
-//  upgradeHead.copy(head);
-//  upgradeHead = null;
-
-      // delegate to ws
-//  self.ws.handleUpgrade(req, socket, head, function (conn) {
       onWebSocket(connect);
-
-//  });
     });
   }
 
   /// Called upon a ws.io connection.
-  ///
-  /// @param {ws.Socket} websocket
-  /// @api private
-  void onWebSocket(SocketConnect connect) {
-//    socket.listen((_) {},
-//        onError: () => _logger.fine('websocket error before upgrade'));
 
-//  if (!transports[req._query.transport].handlesUpgrades) {
-//    _logger.fine('transport doesnt handle upgraded requests');
-//    socket.close();
-//    return;
-//  }
+  void onWebSocket(SocketConnect connect) {
     if (connect.request.connectionInfo == null) {
       return;
     }
     // get client id
     var id = connect.request.uri.queryParameters['sid'];
-
-    // keep a reference to the ws.Socket
-//  req.websocket = socket;
 
     if (id != null) {
       var client = clients[id];
@@ -339,10 +280,6 @@ class Server extends Engine {
   }
 
   /// Captures upgrade requests for a http.Server.
-  ///
-  /// @param {http.Server} server
-  /// @param {Object} options
-  /// @api public
   void attachTo(HttpServer server, Map? options) {
     options = options ?? {};
 
@@ -370,6 +307,7 @@ class Server extends Engine {
     });
   }
 
+  /// Captures upgrade requests for a fennec http.Server.
   void attachToHttpServer(
       StreamController<HttpRequest> streamController, Map? options) {
     options = options ?? {};

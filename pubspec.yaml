@@ -1,7 +1,8 @@
 name: fennec_socket_io_server
-description: A simple command-line application.
-version: 1.0.0
-# homepage: https://www.example.com
+description: this plugin belongs to Fennec Framework. it can be used to implement a performant realtime connection from server side.
+version: 0.0.1
+homepage: https://github.com/Fennec-Framework/fennec_socket_io_server
+issue_tracker: https://github.com/Fennec-Framework/fennec_socket_io_server/issues
 
 environment:
   sdk: ">=2.16.2 <3.0.0"

@@ -201,13 +201,8 @@ class PacketParser {
     })).then((r) => done(result));
   }
 
-/*
- * Decodes data when a payload is maybe expected. Possible binary contents are
- * decoded from their base64 representation
- *
- * @param {String} data, callback method
- * @api public
- */
+  /// Decodes data when a payload is maybe expected. Possible binary contents are
+  /// decoded from their base64 representation
 
   static decodePayload(data,
       {bool binaryType = false,

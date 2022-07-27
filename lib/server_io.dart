@@ -29,13 +29,11 @@ class ServerIO {
   /// Server is ready
   ///
   /// @return a Future that resolves to true whenever the server is ready
-  /// @api public
   Future<bool> get ready => _ready ?? Future.value(false);
 
   /// Server's port
   ///
   /// @return the port number where the server is listening
-  /// @api public
   int? get port {
     if (httpServer == null) {
       return null;
@@ -87,10 +85,7 @@ class ServerIO {
   }
 
   /// Sets/gets whether client code is being served.
-  ///
-  /// @param {Boolean} whether to serve client code
-  /// @return {Server|Boolean} self when setting or value when getting
-  /// @api public
+
   dynamic serveClient([bool? v]) {
     if (v == null) {
       return _serveClient;
@@ -101,8 +96,7 @@ class ServerIO {
   }
 
   /// Backwards compatiblity.
-  ///
-  /// @api public
+
   ServerIO set(String key, [val]) {
     if ('authorization' == key && val != null) {
       use((socket, next) {
@@ -130,10 +124,6 @@ class ServerIO {
   }
 
   /// Sets the client serving path.
-  ///
-  /// @param {String} pathname
-  /// @return {Server|String} self when setting or value when getting
-  /// @api public
   dynamic path([String? v]) {
     if (v == null || v.isEmpty) return _path;
     _path = v.replaceFirst(RegExp(r'/\/$/'), '');
@@ -152,10 +142,6 @@ class ServerIO {
   }
 
   /// Sets the allowed origins for requests.
-  ///
-  /// @param {String} origins
-  /// @return {Server|Adapter} self when setting or value when getting
-  /// @api public
   dynamic origins([String? v]) {
     if (v == null || v.isEmpty) return _origins;
 
@@ -163,23 +149,19 @@ class ServerIO {
     return this;
   }
 
-  /// Attaches socket.io to a server or port.
-  ///
-  /// @param {http.Server|Number} server or port
-  /// @param {Object} options passed to engine.io
-  /// @return {Server} self
-  /// @api public
+  /// Attaches socket.io to a  port.
   Future<void> listen(dynamic host, int port, [Map? opts]) async {
-    await attach(host, port, opts);
+    await _attach(host, port, opts);
   }
 
+  /// Attaches socket.io to a  server.
   Future<void> listenToHttpServer(
       StreamController<HttpRequest> httpServerStream,
       [Map? opts]) async {
-    await attachToHttpServer(httpServerStream, opts);
+    await _attachToHttpServer(httpServerStream, opts);
   }
 
-  Future<ServerIO> attachToHttpServer(
+  Future<ServerIO> _attachToHttpServer(
       StreamController<HttpRequest> httpServerStream,
       [Map? opts]) async {
     opts ??= {};
@@ -202,7 +184,7 @@ class ServerIO {
     return this;
   }
 
-  Future<ServerIO> attach(dynamic host, int port, [Map? opts]) async {
+  Future<ServerIO> _attach(dynamic host, int port, [Map? opts]) async {
     opts ??= {};
     if (!opts.containsKey('path')) {
       opts['path'] = path();
@@ -249,9 +231,6 @@ class ServerIO {
   }
 
   /// Closes server connection
-  ///
-  /// @return a Future that resolves when the httpServer is closed
-  /// @api public
   Future<void> close() async {
     nsps['/']!.sockets.toList(growable: false).forEach((socket) {
       socket.onclose();

@@ -43,11 +43,6 @@ class _MemoryStoreAdapter extends EventEmitter implements Adapter {
   }
 
   /// Adds a socket to a room.
-  ///
-  /// @param {String} socket id
-  /// @param {String} room name
-  /// @param {Function} callback
-  /// @api public
   @override
   void add(String id, String room, [dynamic Function([dynamic])? fn]) {
     sids[id] = sids[id] ?? {};
@@ -58,11 +53,6 @@ class _MemoryStoreAdapter extends EventEmitter implements Adapter {
   }
 
   /// Removes a socket from a room.
-  ///
-  /// @param {String} socket id
-  /// @param {String} room name
-  /// @param {Function} callback
-  /// @api public
   @override
   void del(String id, String room, [dynamic Function([dynamic])? fn]) {
     sids[id] = sids[id] ?? {};
@@ -76,10 +66,6 @@ class _MemoryStoreAdapter extends EventEmitter implements Adapter {
   }
 
   /// Removes a socket from all rooms it's joined.
-  ///
-  /// @param {String} socket id
-  /// @param {Function} callback
-  /// @api public
   @override
   void delAll(String id, [dynamic Function([dynamic])? fn]) {
     var rooms = sids[id];
@@ -97,14 +83,6 @@ class _MemoryStoreAdapter extends EventEmitter implements Adapter {
   }
 
   /// Broadcasts a packet.
-  ///
-  /// Options:
-  ///  - `flags` {Object} flags for this packet
-  ///  - `except` {Array} sids that should be excluded
-  ///  - `rooms` {Array} list of rooms to broadcast to
-  ///
-  /// @param {Object} packet object
-  /// @api public
   @override
   void broadcast(Map packet, [Map? opts]) {
     opts = opts ?? {};
@@ -148,10 +126,6 @@ class _MemoryStoreAdapter extends EventEmitter implements Adapter {
   }
 
   /// Gets a list of clients by sid.
-  ///
-  /// @param {Array} explicit set of rooms to check.
-  /// @param {Function} callback
-  /// @api public
   @override
   void clients(
       [List<String> rooms = const [], dynamic Function([dynamic])? fn]) {
@@ -186,10 +160,6 @@ class _MemoryStoreAdapter extends EventEmitter implements Adapter {
   }
 
   /// Gets the list of rooms a given client has joined.
-  ///
-  /// @param {String} socket id
-  /// @param {Function} callback
-  /// @api public
   @override
   void clientRooms(String id, [dynamic Function(dynamic, [dynamic])? fn]) {
     var rooms = sids[id];
@@ -198,16 +168,12 @@ class _MemoryStoreAdapter extends EventEmitter implements Adapter {
 }
 
 /// Room constructor.
-///
-/// @api private
+
 class _Room {
   Map<String, bool> sockets = {};
   int length = 0;
 
   /// Adds a socket to a room.
-  ///
-  /// @param {String} socket id
-  /// @api private
   void add(String id) {
     if (!sockets.containsKey(id)) {
       sockets[id] = true;
@@ -216,9 +182,6 @@ class _Room {
   }
 
   /// Removes a socket from a room.
-  ///
-  /// @param {String} socket id
-  /// @api private
   void del(String id) {
     if (sockets.containsKey(id)) {
       sockets.remove(id);
