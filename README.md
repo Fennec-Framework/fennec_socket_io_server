@@ -38,26 +38,11 @@ await serverIO1.listen('0.0.0.0', 3000);
  testRouter.get(
    path: '/simple1',
    requestHandler: (Request req, Response res) {
-     serverIO.emit('message', 'JACK AISSA');
+     serverIO.emit('message', 'hello fennec');
      res.send('ss');
    },
  );
- application.addRouter(testRouter);
- application.addRoute(Route(
-     path: '/show',
-     requestMethod: RequestMethod.get(),
-     requestHandler: (Request req, Response res) {
-       res.ok().send('show received');
-     },
-     middlewares: [
-       (req, res) {
-         if (1 == 2) {
-           return MiddleWareResponse(MiddleWareResponseEnum.next);
-         }
-         res.forbidden().send('not allowed');
-         return MiddleWareResponse(MiddleWareResponseEnum.stop);
-       }
-     ]));
+
  application.useSocketIOServer(true);
 
  Server server = Server(application);
