@@ -29,6 +29,7 @@ const List socketEvents = [
   'removeListener'
 ];
 
+/// [Socket]
 class Socket extends EventEmitter {
   Namespace nsp;
   Client client;
