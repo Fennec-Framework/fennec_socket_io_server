@@ -16,9 +16,9 @@ class Client {
 
   /// Client constructor.
   ///
-  /// @param {Server} server instance
-  /// @param {Socket} connection
-  /// @api private
+  /// [server] server instance
+  /// [Socket] connection
+
   Client(this.server, this.conn)
       : id = conn.id,
         request = conn.connect.request {
@@ -27,7 +27,6 @@ class Client {
 
   /// Sets up event listeners.
   ///
-  /// @api private
   void setup() {
     decoder.on('decoded', ondecoded);
     conn.on('data', ondata);
@@ -37,8 +36,7 @@ class Client {
 
   /// Connects a client to a namespace.
   ///
-  /// @param {String} namespace name
-  /// @api private
+  /// [name] namespace name
   void connect(String name, [query]) {
     if (!server.nsps.containsKey(name)) {
       packet(<dynamic, dynamic>{
@@ -68,8 +66,6 @@ class Client {
   }
 
   /// Disconnects from all namespaces and closes transport.
-  ///
-  /// @api private
   void disconnect() {
     // we don't use a for loop because the length of
     // `sockets` changes upon each iteration
@@ -82,8 +78,6 @@ class Client {
   }
 
   /// Removes a socket. Called by each `Socket`.
-  ///
-  /// @api private
   void remove(socket) {
     var i = sockets.indexOf(socket);
     if (i >= 0) {
@@ -94,8 +88,6 @@ class Client {
   }
 
   /// Closes the underlying connection.
-  ///
-  /// @api private
   void close() {
     if ('open' == conn.readyState) {
       conn.close();
@@ -104,10 +96,8 @@ class Client {
   }
 
   /// Writes a packet to the transport.
-  ///
-  /// @param {Object} packet object
-  /// @param {Object} options
-  /// @api private
+  /// [packet] packet object
+  /// [options] options
   void packet(packet, [Map? opts]) {
     var self = this;
     opts ??= {};
@@ -136,20 +126,16 @@ class Client {
   }
 
   /// Called with incoming transport data.
-  ///
-  /// @api private
   void ondata(data) {
     // try/catch is needed for protocol violations (GH-1880)
     try {
       decoder.add(data);
     } catch (e, _) {
-      //  onerror(e);
+      print(e);
     }
   }
 
   /// Called when parser fully decodes a packet.
-  ///
-  /// @api private
   void ondecoded(packet) {
     if (connect == packet['type']) {
       final nsp = packet['nsp'];
@@ -164,9 +150,8 @@ class Client {
   }
 
   /// Handles an error.
-  ///
-  /// @param {Objcet} error object
-  /// @api private
+  /// [err] error object
+
   void onerror(err) {
     for (var socket in sockets) {
       socket.onerror(err);
@@ -175,9 +160,8 @@ class Client {
   }
 
   /// Called upon transport close.
-  ///
-  /// @param {String} reason
-  /// @api private
+  /// [reason] reason
+
   void onclose(reason) {
     destroy();
 
@@ -192,8 +176,6 @@ class Client {
   }
 
   /// Cleans up event listeners.
-  ///
-  /// @api private
   void destroy() {
     conn.off('data', ondata);
     conn.off('error', onerror);

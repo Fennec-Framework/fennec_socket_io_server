@@ -7,6 +7,7 @@ import 'server_io.dart';
 import 'utils/entity_emitter.dart';
 import 'utils/parser.dart';
 
+/// all possible socket events
 List events = [
   'error',
   'connect',
@@ -16,8 +17,7 @@ List events = [
 ];
 
 /// Flags.
-///
-/// @api private
+
 List flags = ['json', 'volatile', 'broadcast'];
 
 const List socketEvents = [
@@ -147,9 +147,9 @@ class Socket extends EventEmitter {
 
   /// Targets a room when broadcasting.
   ///
-  /// @param {String} name
-  /// @return {Socket} self
-  /// @api public
+  ///  [name]
+  /// @return [Socket] self
+
   Socket to(String name) {
     if (!roomList.contains(name)) roomList.add(name);
     return this;

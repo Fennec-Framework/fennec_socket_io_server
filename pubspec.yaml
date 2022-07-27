@@ -11,8 +11,7 @@ environment:
 
 dev_dependencies:
   lints: ^1.0.0
-  fennec: ^0.0.9
 dependencies:
+  fennec: ^1.0.4
   js: ^0.6.4
-
   uuid: ^3.0.6
