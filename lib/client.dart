@@ -3,6 +3,7 @@ import 'server_io.dart';
 
 import 'utils/parser.dart';
 
+/// A Class that represents a Socket Client.
 class Client {
   ServerIO server;
   Socket conn;
@@ -31,7 +32,7 @@ class Client {
     decoder.on('decoded', ondecoded);
     conn.on('data', ondata);
     conn.on('error', (data) {});
-    conn.on('close', onclose);
+    conn.on('close', onClose);
   }
 
   /// Connects a client to a namespace.
@@ -91,7 +92,7 @@ class Client {
   void close() {
     if ('open' == conn.readyState) {
       conn.close();
-      onclose('forced server close');
+      onClose('forced server close');
     }
   }
 
@@ -122,7 +123,7 @@ class Client {
         // a broadcast pre-encodes a packet
         writeToEngine(packet);
       }
-    } else {}
+    }
   }
 
   /// Called with incoming transport data.
@@ -144,7 +145,7 @@ class Client {
     } else {
       var socket = nsps[packet['nsp']];
       if (socket != null) {
-        socket.onpacket(packet);
+        socket.onPacket(packet);
       } else {}
     }
   }
@@ -152,23 +153,23 @@ class Client {
   /// Handles an error.
   /// [err] error object
 
-  void onerror(err) {
+  void onError(err) {
     for (var socket in sockets) {
-      socket.onerror(err);
+      socket.onError(err);
     }
-    onclose('client error');
+    onClose('client error');
   }
 
   /// Called upon transport close.
   /// [reason] reason
 
-  void onclose(reason) {
+  void onClose(reason) {
     destroy();
 
     // `nsps` and `sockets` are cleaned up seamlessly
     if (sockets.isNotEmpty) {
       for (var socket in List.from(sockets)) {
-        socket.onclose(reason);
+        socket.onClose(reason);
       }
       sockets.clear();
     }
@@ -178,8 +179,8 @@ class Client {
   /// Cleans up event listeners.
   void destroy() {
     conn.off('data', ondata);
-    conn.off('error', onerror);
-    conn.off('close', onclose);
+    conn.off('error', onError);
+    conn.off('close', onClose);
     decoder.off('decoded', ondecoded);
   }
 }

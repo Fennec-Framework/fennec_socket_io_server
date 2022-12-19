@@ -14,6 +14,7 @@ Map oldSettings = {
   'destroy buffer size': 'maxHttpBufferSize'
 };
 
+/// a Class that represents a ServerIO.
 class ServerIO {
   Map<String, Namespace> nsps = {};
   late Namespace sockets;
@@ -50,6 +51,7 @@ class ServerIO {
     sockets = of('/');
     _ready = Future.value(true);
   }
+
   void checkRequest(HttpRequest req, [Function? fn]) {
     var origin = req.headers.value('origin') ?? req.headers.value('referer');
     if (origin == null || origin.isEmpty) {
@@ -95,7 +97,7 @@ class ServerIO {
     return this;
   }
 
-  /// Backwards compatiblity.
+  /// Backwards compatibility.
 
   ServerIO set(String key, [val]) {
     if ('authorization' == key && val != null) {
@@ -118,7 +120,7 @@ class ServerIO {
       path(val);
     } else if (oldSettings[key] && engine![oldSettings[key]]) {
       engine![oldSettings[key]] = val;
-    } else {}
+    }
 
     return this;
   }
@@ -207,11 +209,11 @@ class ServerIO {
 
   ServerIO bind(Engine engine) {
     this.engine = engine;
-    this.engine!.on('connection', onconnection);
+    this.engine!.on('connection', onConnection);
     return this;
   }
 
-  ServerIO onconnection(conn) {
+  ServerIO onConnection(conn) {
     var client = Client(this, conn);
     client.connect('/');
     return this;
@@ -233,7 +235,7 @@ class ServerIO {
   /// Closes server connection
   Future<void> close() async {
     nsps['/']!.sockets.toList(growable: false).forEach((socket) {
-      socket.onclose();
+      socket.onClose();
     });
 
     engine?.close();
@@ -247,15 +249,23 @@ class ServerIO {
 
   // redirect to sockets method
   Namespace to(_) => sockets.to(_);
+
   Namespace use(_) => sockets.use(_);
+
   void send(_) => sockets.send(_);
+
   Namespace write(_) => sockets.write(_);
+
   Namespace clients(_) => sockets.clients(_);
+
   Namespace compress(_) => sockets.compress(_);
 
   // emitter
   void emit(event, data) => sockets.emit(event, data);
+
   void on(event, handler) => sockets.on(event, handler);
+
   void once(event, handler) => sockets.once(event, handler);
+
   void off(event, handler) => sockets.off(event, handler);
 }

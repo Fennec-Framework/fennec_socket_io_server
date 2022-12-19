@@ -28,8 +28,10 @@ const Map<String, int> packetTypeMap = <String, int>{
   'noop': 6
 };
 
+///[PacketParser]
 class PacketParser {
   static const error = {'type': 'error', 'data': 'parser error'};
+
   static String? encodePacket(Map packet,
       {dynamic supportsBinary,
       utf8encode = false,

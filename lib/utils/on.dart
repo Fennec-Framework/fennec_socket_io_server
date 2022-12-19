@@ -5,8 +5,11 @@ Destroyable on(EventEmitter obj, String ev, EventHandler fn) {
   return Destroyable(() => obj.off(ev, fn));
 }
 
+///[Destroyable]
 class Destroyable {
   Function callback;
+
   Destroyable(this.callback);
+
   void destroy() => callback();
 }

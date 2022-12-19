@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+///[Binary]
 class Binary {
   static final String keyPlaceholder = "_placeholder";
 

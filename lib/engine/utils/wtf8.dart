@@ -1,3 +1,4 @@
+///[WTF8]
 class WTF8 {
   static String encode(String string) {
     var codePoints = _ucs2decode(string);

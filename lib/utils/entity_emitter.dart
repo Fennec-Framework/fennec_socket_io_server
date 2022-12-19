@@ -2,6 +2,7 @@ import 'dart:collection' show HashMap;
 
 typedef EventHandler<T> = dynamic Function(T data);
 
+///[EventEmitter]
 class EventEmitter {
   Map<String, List<EventHandler>> _events =
       HashMap<String, List<EventHandler>>();

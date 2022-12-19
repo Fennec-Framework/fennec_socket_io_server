@@ -137,12 +137,8 @@ class Socket extends EventEmitter {
         this.packet(packet,
             {'volatile': flags['volatile'], compress: flags['compress']});
       }
-
-//      // reset flags
       roomList = [];
       this.flags = null;
-//    }
-//    return this;
     }
   }
 
@@ -175,7 +171,6 @@ class Socket extends EventEmitter {
   /// @param {Object} options
   /// @api private
   void packet(packet, [opts]) {
-    // ignore preEncoded = true.
     if (packet is Map) {
       packet['nsp'] = nsp.name;
     }
@@ -191,7 +186,6 @@ class Socket extends EventEmitter {
   /// @return {Socket} self
   /// @api private
   Socket join(room, [fn]) {
-//    debug('joining room %s', room);
     if (roomMap.containsKey(room)) {
       if (fn != null) fn(null);
       return this;
@@ -212,10 +206,8 @@ class Socket extends EventEmitter {
   /// @return {Socket} self
   /// @api private
   Socket leave(room, fn) {
-//    debug('leave room %s', room);
     adapter.del(id, room, ([err]) {
       if (err != null) return fn?.call(err);
-//      _logger.info('left room %s', room);
       roomMap.remove(room);
       fn?.call(null);
     });
@@ -245,27 +237,26 @@ class Socket extends EventEmitter {
   ///
   /// @param {Object} packet
   /// @api private
-  void onpacket(packet) {
-//    debug('got packet %j', packet);
+  void onPacket(packet) {
     switch (packet['type']) {
       case eventValue:
-        onevent(packet);
+        onEvent(packet);
         break;
 
       case binaryEventValue:
-        onevent(packet);
+        onEvent(packet);
         break;
 
       case ackValue:
-        onack(packet);
+        onAck(packet);
         break;
 
       case binaryAckValue:
-        onack(packet);
+        onAck(packet);
         break;
 
       case disconnectValue:
-        ondisconnect();
+        onDisconnect();
         break;
 
       case errorValue:
@@ -277,15 +268,11 @@ class Socket extends EventEmitter {
   ///
   /// @param {Object} packet object
   /// @api private
-  void onevent(packet) {
+  void onEvent(packet) {
     List args = packet['data'] ?? [];
-//    debug('emitting event %j', args);
-
     if (null != packet['id']) {
-//      debug('attaching ack callback to event');
       args.add(ack(packet['id']));
     }
-
     // dart doesn't support "String... rest" syntax.
     if (args.length > 2) {
       Function.apply(super.emit, [args.first, args.sublist(1)]);
@@ -303,10 +290,7 @@ class Socket extends EventEmitter {
     return (_) {
       // prevent double callbacks
       if (sent) return;
-//      var args = Array.prototype.slice.call(arguments);
-//      debug('sending ack %j', args);
-
-      var type = /*hasBin(args) ? parser.BINARY_ACK : parser.*/ ackValue;
+      var type = ackValue;
       packet(<dynamic, dynamic>{
         'id': id,
         'type': type,
@@ -319,30 +303,24 @@ class Socket extends EventEmitter {
   /// Called upon ack packet.
   ///
   /// @api private
-  void onack(packet) {
+  void onAck(packet) {
     Function ack = acks.remove(packet['id']);
-
-//      debug('calling ack %s with %j', packet.id, packet.data);
     Function.apply(ack, packet['data']);
   }
 
   /// Called upon client disconnect packet.
   ///
   /// @api private
-  void ondisconnect() {
-//    debug('got disconnect packet');
-    onclose('client namespace disconnect');
+  void onDisconnect() {
+    onClose('client namespace disconnect');
   }
 
   /// Handles a client error.
   ///
   /// @api private
-  void onerror(err) {
+  void onError(err) {
     if (hasListeners('error')) {
       emit('error', err);
-    } else {
-//      console.error('Missing error handler on `socket`.');
-//      console.error(err.stack);
     }
   }
 
@@ -351,10 +329,8 @@ class Socket extends EventEmitter {
   /// @param {String} reason
   /// @param {Error} optional error object
   /// @api private
-  dynamic onclose([reason]) {
+  dynamic onClose([reason]) {
     if (!connected) return this;
-//    debug('closing socket - reason %s', reason);
-
     emit('disconnecting', reason);
     leaveAll();
     nsp.remove(this);
@@ -384,7 +360,7 @@ class Socket extends EventEmitter {
       client.disconnect();
     } else {
       packet(<dynamic, dynamic>{'type': disconnectValue});
-      onclose('server namespace disconnect');
+      onClose('server namespace disconnect');
     }
     return this;
   }

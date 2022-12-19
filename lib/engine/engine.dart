@@ -4,6 +4,7 @@ import 'dart:io';
 import '../utils/entity_emitter.dart';
 import 'server.dart';
 
+///[Engine]
 class Engine extends EventEmitter {
   static Engine attach(server, [Map? options]) {
     var engine = Server(options);

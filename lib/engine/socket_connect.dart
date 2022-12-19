@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 
+///[SocketConnect]
 class SocketConnect {
   WebSocket? _socket;
   Completer? _done;
   bool? _completed;
   HttpRequest request;
+
   SocketConnect(this.request);
 
   SocketConnect.fromWebSocket(this.request, WebSocket socket) {

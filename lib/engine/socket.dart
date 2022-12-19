@@ -1,13 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:fennec_socket_io_server/engine/transports.dart';
-
 import '../utils/entity_emitter.dart';
 import 'server.dart';
 import 'socket_connect.dart';
 
+///[Socket]
 class Socket extends EventEmitter {
   String id;
   Server server;
@@ -286,6 +285,7 @@ class Socket extends EventEmitter {
 
   /// Sends a message packet.
   void send(data, options, [callback]) => write(data, options, callback);
+
   Socket write(data, options, [callback]) {
     sendPacket('message', data: data, options: options, callback: callback);
     return this;

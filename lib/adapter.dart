@@ -6,16 +6,23 @@ import 'namespace.dart';
 import 'utils/entity_emitter.dart';
 import 'utils/parser.dart';
 
+/// An Abstract class that is used as a Adapter
+///
 abstract class Adapter {
   Map nsps = {};
   Map<String, _Room> rooms = {};
   Map<String, Map> sids = {};
 
   void add(String id, String room, [dynamic Function([dynamic]) fn]);
+
   void del(String id, String room, [dynamic Function([dynamic]) fn]);
+
   void delAll(String id, [dynamic Function([dynamic]) fn]);
+
   void broadcast(Map packet, [Map opts]);
+
   void clients([List<String> rooms, dynamic Function([dynamic]) fn]);
+
   void clientRooms(String id, [dynamic Function(dynamic, [dynamic]) fn]);
 
   static Adapter newInstance(String key, Namespace nsp) {

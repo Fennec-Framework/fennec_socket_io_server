@@ -42,17 +42,19 @@ await serverIO1.listen('0.0.0.0', 3000);
      res.send('ss');
    },
  );
+serverIO.on('connection', (client) {
+print('coo');
+});
+application.useWebSocket(true);
+application.addRouter(testRouter);
+application.socketIO(socketIOHandler: (context, ws) {
+streamController.sink.add(ws);
+});
+await serverIO.listenToHttpServer(streamController);
+await application.runServer();
 
- application.useSocketIOServer(true);
 
- Server server = Server(application);
- await server.startServer();
 
- serverIO.on('connection', (client) {
-   print('coo');
- });
-
- await serverIO.listenToHttpServer(server.httpServerStream);
 
 ```
 

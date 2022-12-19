@@ -6,6 +6,7 @@ import 'socket_connect.dart';
 class JSONPTransport extends PollingTransport {
   late String head;
   late String foot;
+
   JSONPTransport(SocketConnect connect) : super(connect) {
     head = '___eio[' +
         (connect.request.uri.queryParameters['j'] ?? '')
@@ -27,9 +28,6 @@ class JSONPTransport extends PollingTransport {
       // \\n must be replaced with \n and \\\\n with \\n
       data = data.replaceAllMapped(RegExp(r'(\\)?\\n'), (match) {
         throw UnimplementedError('Not implemented yet');
-//        print(match);
-//        match
-//      return slashes ? match : '\n';
       });
       super.onData(data.replaceAll(RegExp(r'\\\\n'), '\\n'));
     }

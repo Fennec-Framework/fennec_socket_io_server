@@ -15,6 +15,7 @@ List<String> events = [
 /// Flags.
 List<String> flags = ['json', 'volatile'];
 
+/// a Class that represents a Socket Namespace.
 class Namespace extends EventEmitter {
   String name;
   ServerIO server;
@@ -98,7 +99,7 @@ class Namespace extends EventEmitter {
           // fire user-set events
           self.emit('connect', socket);
           self.emit('connection', socket);
-        } else {}
+        }
       });
     });
     return socket;
@@ -108,7 +109,7 @@ class Namespace extends EventEmitter {
   void remove(socket) {
     if (sockets.contains(socket)) {
       sockets.remove(socket);
-    } else {}
+    }
   }
 
   /// Emits to all clients.
@@ -118,16 +119,9 @@ class Namespace extends EventEmitter {
     if (events.contains(event)) {
       super.emit(event, argument);
     } else {
-      // @todo check how to handle it with Dart
-      // if (hasBin(args)) { parserType = ParserType.binaryEvent; } // binary
-
-      // ignore: omit_local_variable_types
       List data = argument == null ? [event] : [event, argument];
-
       final packet = {'type': eventValue, 'data': data};
-
       adapter.broadcast(packet, {'rooms': rooms, 'flags': flags});
-
       rooms = [];
       flags = {};
     }
